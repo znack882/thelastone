@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>АНО ДО "Стандарт" - Группы</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --primary-light: #4895ef;
+      --secondary-color: #7209b7;
+      --success-color: #4cc9f0;
+      --danger-color: #f72585;
+      --text-color: #2b2d42;
+      --text-light: #8d99ae;
+      --border-color: #edf2f4;
+      --bg-light: #f8f9fa;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .header h1 {
+      margin: 0 0 15px 0;
+      font-size: 2rem;
+    }
+
+    .widgets {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .widget {
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .widget:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .widget.active {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .content {
+      background-color: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+    }
+
+    .filter-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .filter-input, .filter-select {
+      padding: 8px 15px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+
+    .filter-input:focus, .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn.small {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .btn.secondary {
+      background-color: var(--secondary-color);
+    }
+
+    .btn.secondary:hover {
+      background-color: #5a08a0;
+    }
+
+    .btn.danger {
+      background-color: var(--danger-color);
+    }
+
+    .btn.danger:hover {
+      background-color: #e5177e;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 30px;
+      width: 70%;
+      max-width: 800px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+    
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: var(--transition);
+    }
+    
+    .close:hover {
+      color: var(--danger-color);
+      transform: rotate(90deg);
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Стили для таблицы */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .data-table th, .data-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .data-table th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+    }
+
+    .data-table tr:hover {
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .status.active {
+      background-color: rgba(76, 201, 240, 0.2);
+      color: var(--success-color);
+    }
+
+    .status.inactive {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: var(--danger-color);
+    }
+
+    .actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    /* Стили для формы */
+    .form-row {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      flex: 1;
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    /* Уведомления */
+    .toast-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      background-color: var(--success-color);
+      color: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast-notification.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast-notification.error {
+      background-color: var(--danger-color);
+    }
+
+    .toast-notification i {
+      font-size: 1.2rem;
+    }
+
+    /* Модальное окно участников */
+    .students-modal .modal-content {
+      max-width: 600px;
+    }
+
+    .students-list {
+      max-height: 400px;
+      overflow-y: auto;
+      margin: 20px 0;
+    }
+
+    .student-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .student-info {
+      flex: 1;
+    }
+
+    .student-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    /* Модальное окно выбора пользователей */
+    .select-users-modal .modal-content {
+      max-width: 700px;
+    }
+
+    .users-search-container {
+      margin-bottom: 20px;
+    }
+
+    .users-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .user-select-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .user-select-item:hover {
+      background-color: var(--bg-light);
+    }
+
+    .user-select-item.selected {
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+
+    .user-select-info {
+      flex: 1;
+    }
+
+    .user-select-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 90%;
+        padding: 20px;
+      }
+      
+      .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .data-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .btn {
+        padding: 8px 15px;
+        font-size: 0.85rem;
+      }
+
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .form-actions .btn {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+
+      .widget {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+      }
+
+      .content {
+        padding: 15px;
+      }
+
+      .data-table th, 
+      .data-table td {
+        padding: 8px;
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>АНО ДО "Стандарт"</h1>
+      <div class="widgets">
+        <a href="dipl.html" class="widget"><i class="fas fa-home"></i> Главная</a>
+        <a href="users.html" class="widget"><i class="fas fa-users"></i> Пользователи</a>
+        <a href="doki.html" class="widget"><i class="fas fa-file-signature"></i> Договоры</a>
+        <a href="group.html" class="widget active"><i class="fas fa-layer-group"></i> Группы</a>
+        <a href="otcheti.html" class="widget"><i class="fas fa-chart-bar"></i> Отчёты</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <h2><i class="fas fa-layer-group"></i> Учебные группы</h2>
+      
+      <div class="filter-section">
+        <div class="filter-group">
+          <label for="group-filter"><i class="fas fa-filter"></i> Фильтр:</label>
+          <select id="group-filter" class="filter-select">
+            <option>Все группы</option>
+            <option>Актерское мастерство</option>
+            <option>Танцы</option>
+            <option>Музыка</option>
+            <option>Рисование</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <input type="text" id="group-search" placeholder="Поиск по названию..." class="filter-input">
+        </div>
+        
+        <div class="actions">
+          <button class="btn" id="addGroupBtn"><i class="fas fa-plus"></i> Добавить группу</button>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="data-table" id="groupsTable">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Название группы</th>
+              <th>Программа</th>
+              <th>Руководитель</th>
+              <th>Участники</th>
+              <th>Статус</th>
+              <th>Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Группы будут загружаться здесь -->
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="table-info" id="tableInfo">
+        Отображено <span id="shownFrom">0</span> - <span id="shownTo">0</span> (всего <span id="totalGroups">0</span>)
+      </div>
+    </main>
+  </div>
+
+  <!-- Модальное окно добавления/редактирования группы -->
+  <div id="groupModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalTitle"><i class="fas fa-layer-group"></i> <span id="modalAction">Добавление</span> новой группы</h2>
+      <form id="groupForm">
+        <input type="hidden" id="groupId">
+        <div class="form-group">
+          <label for="groupName"><i class="fas fa-tag"></i> Название группы*</label>
+          <input type="text" id="groupName" required placeholder="Введите название группы">
+        </div>
+        <div class="form-group">
+          <label for="groupProgram"><i class="fas fa-book"></i> Программа*</label>
+          <select id="groupProgram" required>
+            <option value="">Выберите программу</option>
+            <option value="acting">Актерское мастерство</option>
+            <option value="dance">Танцы</option>
+            <option value="music">Музыка</option>
+            <option value="art">Рисование</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="groupLeader"><i class="fas fa-user-tie"></i> Руководитель группы*</label>
+          <input type="text" id="groupLeader" required placeholder="ФИО руководителя">
+        </div>
+        <div class="form-group">
+          <label for="groupMaxStudents"><i class="fas fa-users"></i> Макс. количество студентов*</label>
+          <input type="number" id="groupMaxStudents" min="1" value="15" required>
+        </div>
+        <div class="form-group">
+          <label for="groupDescription"><i class="fas fa-align-left"></i> Описание группы</label>
+          <textarea id="groupDescription" rows="3" placeholder="Краткое описание группы"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn secondary" id="cancelBtn"><i class="fas fa-times"></i> Отмена</button>
+          <button type="submit" class="btn"><i class="fas fa-save"></i> Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно участников группы -->
+  <div id="studentsModal" class="modal students-modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2><i class="fas fa-users"></i> Участники группы: <span id="groupTitle"></span></h2>
+      
+      <div class="filter-section">
+        <div class="filter-group">
+          <input type="text" id="student-search" placeholder="Поиск участников..." class="filter-input">
+        </div>
+        <button class="btn" id="addStudentBtn"><i class="fas fa-plus"></i> Добавить участника</button>
+      </div>
+      
+      <div class="students-list" id="studentsList">
+        <!-- Список участников будет здесь -->
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn secondary" id="closeStudentsBtn"><i class="fas fa-times"></i> Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Модальное окно выбора пользователей -->
+  <div id="selectUsersModal" class="modal select-users-modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2><i class="fas fa-user-plus"></i> Выберите пользователей</h2>
+      
+      <div class="users-search-container">
+        <div class="filter-group">
+          <input type="text" id="user-search" placeholder="Поиск по фамилии..." class="filter-input">
+        </div>
+      </div>
+      
+      <div class="users-list" id="usersList">
+        <!-- Список пользователей будет здесь -->
+      </div>
+      
+      <div class="form-actions">
+        <button type="button" class="btn secondary" id="cancelSelectUsersBtn"><i class="fas fa-times"></i> Отмена</button>
+        <button type="button" class="btn" id="confirmSelectUsersBtn"><i class="fas fa-check"></i> Добавить выбранных</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Хранилище данных
+    const GROUPS_KEY = 'standart_groups';
+    const USERS_KEY = 'standart_users';
+    let groups = JSON.parse(localStorage.getItem(GROUPS_KEY)) || [];
+    let users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+    let currentEditId = null;
+    let currentGroupId = null;
+    let selectedUsers = [];
+
+    // DOM элементы
+    const modal = document.getElementById("groupModal");
+    const studentsModal = document.getElementById("studentsModal");
+    const selectUsersModal = document.getElementById("selectUsersModal");
+    const addBtn = document.getElementById("addGroupBtn");
+    const form = document.getElementById("groupForm");
+    const groupsTable = document.getElementById("groupsTable").getElementsByTagName('tbody')[0];
+    const tableInfo = document.getElementById("tableInfo");
+    const filterSelect = document.getElementById("group-filter");
+    const searchInput = document.getElementById("group-search");
+    const studentsList = document.getElementById("studentsList");
+    const groupTitle = document.getElementById("groupTitle");
+    const addStudentBtn = document.getElementById("addStudentBtn");
+    const usersList = document.getElementById("usersList");
+    const userSearchInput = document.getElementById("user-search");
+    const confirmSelectUsersBtn = document.getElementById("confirmSelectUsersBtn");
+
+    // Инициализация таблицы групп
+    function loadGroups() {
+      groupsTable.innerHTML = '';
+      const filteredGroups = filterGroups();
+      
+      filteredGroups.forEach((group, index) => {
+        const row = groupsTable.insertRow();
+        const groupUsers = getGroupUsers(group.id);
+        
+        row.innerHTML = `
+          <td>${index + 1}</td>
+          <td><strong>${group.name}</strong>${group.description ? `<br><small class="text-muted">${group.description}</small>` : ''}</td>
+          <td>${getProgramName(group.program)}</td>
+          <td>${group.leader || 'Не указан'}</td>
+          <td>${groupUsers.length} / ${group.maxStudents}</td>
+          <td><span class="status ${group.status === 'active' ? 'active' : 'inactive'}">${group.status === 'active' ? 'Активна' : 'Неактивна'}</span></td>
+          <td class="actions">
+            <button class="btn small students-btn" data-id="${group.id}"><i class="fas fa-users"></i> Участники</button>
+            <button class="btn small edit-btn" data-id="${group.id}"><i class="fas fa-edit"></i> Редактировать</button>
+            <button class="btn small danger delete-btn" data-id="${group.id}"><i class="fas fa-trash"></i> Удалить</button>
+          </td>
+        `;
+      });
+      
+      updateTableInfo();
+    }
+
+    // Получение пользователей группы
+    function getGroupUsers(groupId) {
+      return users.filter(user => user.groupId === groupId);
+    }
+
+    // Получение названия программы по значению
+    function getProgramName(programValue) {
+      const programs = {
+        'acting': 'Актерское мастерство',
+        'dance': 'Танцы',
+        'music': 'Музыка',
+        'art': 'Рисование'
+      };
+      return programs[programValue] || programValue;
+    }
+
+    // Фильтрация групп
+    function filterGroups() {
+      const filterValue = filterSelect.value;
+      const searchTerm = searchInput.value.toLowerCase();
+      
+      let result = groups;
+      
+      if (filterValue !== 'Все группы') {
+        result = result.filter(g => getProgramName(g.program) === filterValue);
+      }
+      
+      if (searchTerm) {
+        result = result.filter(g => 
+          g.name.toLowerCase().includes(searchTerm) || 
+          (g.description && g.description.toLowerCase().includes(searchTerm))
+        );
+      }
+      
+      return result;
+    }
+
+    // Обновление информации о количестве
+    function updateTableInfo() {
+      const filteredGroups = filterGroups();
+      const totalGroups = groups.length;
+      const visibleCount = filteredGroups.length;
+      
+      document.getElementById('shownFrom').textContent = visibleCount > 0 ? '1' : '0';
+      document.getElementById('shownTo').textContent = visibleCount;
+      document.getElementById('totalGroups').textContent = totalGroups;
+    }
+
+    // Загрузка участников группы
+    function loadGroupStudents(groupId) {
+      const group = groups.find(g => g.id === groupId);
+      if (!group) return;
+      
+      currentGroupId = groupId;
+      groupTitle.textContent = group.name;
+      
+      const groupUsers = getGroupUsers(groupId);
+      studentsList.innerHTML = '';
+      
+      if (groupUsers.length === 0) {
+        studentsList.innerHTML = '<p style="text-align: center; color: var(--text-light);">Нет участников в группе</p>';
+        return;
+      }
+      
+      groupUsers.forEach(user => {
+        const studentItem = document.createElement('div');
+        studentItem.className = 'student-item';
+        studentItem.innerHTML = `
+          <div class="student-info">
+            <strong>${user.fullName}</strong>
+            <div><small>${user.email || 'Нет email'}</small></div>
+          </div>
+          <div class="student-actions">
+            <button class="btn small danger remove-student-btn" data-id="${user.id}"><i class="fas fa-user-minus"></i> Удалить</button>
+          </div>
+        `;
+        studentsList.appendChild(studentItem);
+      });
+      
+      studentsModal.style.display = 'block';
+    }
+
+    // Загрузка пользователей для выбора
+    function loadUsersForSelection(searchTerm = '') {
+      usersList.innerHTML = '';
+      selectedUsers = [];
+      
+      // Получаем всех пользователей с ролью "student" (или всех, если нет ролей)
+      const availableUsers = users.filter(user => {
+        // Фильтрация по поисковому запросу
+        if (searchTerm) {
+          return user.fullName.toLowerCase().includes(searchTerm.toLowerCase());
+        }
+        return true;
+      });
+      
+      if (availableUsers.length === 0) {
+        usersList.innerHTML = '<p style="text-align: center; color: var(--text-light);">Нет пользователей для добавления</p>';
+        return;
+      }
+      
+      availableUsers.forEach(user => {
+        const userItem = document.createElement('div');
+        userItem.className = 'user-select-item';
+        userItem.dataset.id = user.id;
+        userItem.innerHTML = `
+          <div class="user-select-info">
+            <strong>${user.fullName}</strong>
+            <div><small>${user.email || 'Нет email'}</small></div>
+            ${user.groupId ? '<div><small class="text-muted">Уже в другой группе</small></div>' : ''}
+          </div>
+          <div class="user-select-actions">
+            ${!user.groupId ? `<button class="btn small select-user-btn" data-id="${user.id}"><i class="fas fa-plus"></i> Выбрать</button>` : ''}
+          </div>
+        `;
+        usersList.appendChild(userItem);
+      });
+    }
+
+    // Показать уведомление
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast-notification ${type}`;
+      toast.innerHTML = `
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+        ${message}
+      `;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }, 100);
+    }
+
+    // Открытие модального окна для добавления группы
+    addBtn.addEventListener('click', () => {
+      currentEditId = null;
+      document.getElementById("modalAction").textContent = "Добавление";
+      document.getElementById("modalTitle").querySelector('span').textContent = "Добавление";
+      form.reset();
+      modal.style.display = "block";
+    });
+
+    // Открытие модального окна для редактирования группы
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('edit-btn') || e.target.closest('.edit-btn')) {
+        const btn = e.target.classList.contains('edit-btn') ? e.target : e.target.closest('.edit-btn');
+        const id = btn.getAttribute('data-id');
+        const group = groups.find(g => g.id == id);
+        
+        if (group) {
+          currentEditId = id;
+          document.getElementById("modalAction").textContent = "Редактирование";
+          document.getElementById("modalTitle").querySelector('span').textContent = "Редактирование";
+          document.getElementById("groupId").value = group.id;
+          document.getElementById("groupName").value = group.name;
+          document.getElementById("groupProgram").value = group.program;
+          document.getElementById("groupLeader").value = group.leader || '';
+          document.getElementById("groupMaxStudents").value = group.maxStudents || 15;
+          document.getElementById("groupDescription").value = group.description || '';
+          modal.style.display = "block";
+        }
+      }
+      
+      // Открытие модального окна участников
+      if (e.target.classList.contains('students-btn') || e.target.closest('.students-btn')) {
+        const btn = e.target.classList.contains('students-btn') ? e.target : e.target.closest('.students-btn');
+        const id = btn.getAttribute('data-id');
+        loadGroupStudents(id);
+      }
+    });
+
+    // Удаление группы
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('delete-btn') || e.target.closest('.delete-btn')) {
+        const btn = e.target.classList.contains('delete-btn') ? e.target : e.target.closest('.delete-btn');
+        const id = btn.getAttribute('data-id');
+        const group = groups.find(g => g.id == id);
+        
+        if (group && confirm(`Вы уверены, что хотите удалить группу "${group.name}"?`)) {
+          // Удаляем связь пользователей с этой группой
+          users.forEach(user => {
+            if (user.groupId === id) {
+              user.groupId = null;
+            }
+          });
+          saveUsers();
+          
+          groups = groups.filter(g => g.id != id);
+          saveGroups();
+          loadGroups();
+          showToast(`Группа "${group.name}" удалена`, 'success');
+        }
+      }
+      
+      // Удаление участника из группы
+      if (e.target.classList.contains('remove-student-btn') || e.target.closest('.remove-student-btn')) {
+        const btn = e.target.classList.contains('remove-student-btn') ? e.target : e.target.closest('.remove-student-btn');
+        const userId = btn.getAttribute('data-id');
+        const user = users.find(u => u.id == userId);
+        
+        if (user && confirm(`Удалить ${user.fullName} из группы?`)) {
+          user.groupId = null;
+          saveUsers();
+          loadGroupStudents(currentGroupId);
+          showToast(`Пользователь ${user.fullName} удален из группы`, 'success');
+        }
+      }
+      
+      // Выбор пользователя для добавления в группу
+      if (e.target.classList.contains('select-user-btn') || e.target.closest('.select-user-btn')) {
+        const btn = e.target.classList.contains('select-user-btn') ? e.target : e.target.closest('.select-user-btn');
+        const userId = btn.getAttribute('data-id');
+        const userItem = btn.closest('.user-select-item');
+        
+        if (userItem.classList.contains('selected')) {
+          userItem.classList.remove('selected');
+          selectedUsers = selectedUsers.filter(id => id !== userId);
+          btn.innerHTML = '<i class="fas fa-plus"></i> Выбрать';
+        } else {
+          userItem.classList.add('selected');
+          selectedUsers.push(userId);
+          btn.innerHTML = '<i class="fas fa-check"></i> Выбран';
+        }
+      }
+    });
+
+    // Добавление участника в группу
+    addStudentBtn.addEventListener('click', () => {
+      loadUsersForSelection();
+      selectUsersModal.style.display = 'block';
+    });
+
+    // Подтверждение выбора пользователей
+    confirmSelectUsersBtn.addEventListener('click', () => {
+      if (selectedUsers.length === 0) {
+        showToast('Выберите хотя бы одного пользователя', 'error');
+        return;
+      }
+      
+      selectedUsers.forEach(userId => {
+        const user = users.find(u => u.id === userId);
+        if (user) {
+          user.groupId = currentGroupId;
+        }
+      });
+      
+      saveUsers();
+      loadGroupStudents(currentGroupId);
+      selectUsersModal.style.display = 'none';
+      showToast(`Добавлено ${selectedUsers.length} пользователей в группу`, 'success');
+    });
+
+    // Поиск пользователей
+    userSearchInput.addEventListener('input', (e) => {
+      loadUsersForSelection(e.target.value);
+    });
+
+    // Фильтрация групп
+    filterSelect.addEventListener('change', loadGroups);
+    searchInput.addEventListener('input', loadGroups);
+
+    // Сохранение группы
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById("groupName").value.trim();
+      const program = document.getElementById("groupProgram").value;
+      
+      if (name.length < 3) {
+        showToast('Название группы должно быть не короче 3 символов', 'error');
+        return;
+      }
+      
+      if (!program) {
+        showToast('Выберите программу для группы', 'error');
+        return;
+      }
+      
+      const groupData = {
+        id: currentEditId || Date.now().toString(),
+        name: name,
+        program: program,
+        leader: document.getElementById("groupLeader").value.trim(),
+        maxStudents: parseInt(document.getElementById("groupMaxStudents").value),
+        description: document.getElementById("groupDescription").value.trim(),
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      if (currentEditId) {
+        // Обновление существующей группы
+        const index = groups.findIndex(g => g.id == currentEditId);
+        if (index !== -1) {
+          groups[index] = groupData;
+          showToast(`Группа "${groupData.name}" обновлена`, 'success');
+        }
+      } else {
+        // Добавление новой группы
+        groups.push(groupData);
+        showToast(`Группа "${groupData.name}" добавлена`, 'success');
+      }
+      
+      saveGroups();
+      loadGroups();
+      modal.style.display = "none";
+    });
+
+    // Закрытие модальных окон
+    document.querySelectorAll('.close').forEach(btn => {
+      btn.addEventListener('click', () => {
+        modal.style.display = "none";
+        studentsModal.style.display = "none";
+        selectUsersModal.style.display = "none";
+      });
+    });
+    
+    document.getElementById("cancelBtn").addEventListener('click', () => {
+      modal.style.display = "none";
+    });
+    
+    document.getElementById("closeStudentsBtn").addEventListener('click', () => {
+      studentsModal.style.display = "none";
+    });
+    
+    document.getElementById("cancelSelectUsersBtn").addEventListener('click', () => {
+      selectUsersModal.style.display = "none";
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = "none";
+      }
+      if (e.target === studentsModal) {
+        studentsModal.style.display = "none";
+      }
+      if (e.target === selectUsersModal) {
+        selectUsersModal.style.display = "none";
+      }
+    });
+
+    // Сохранение групп в localStorage
+    function saveGroups() {
+      localStorage.setItem(GROUPS_KEY, JSON.stringify(groups));
+    }
+
+    // Сохранение пользователей в localStorage
+    function saveUsers() {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    // Загрузка тестовых данных при первом запуске
+    if (groups.length === 0) {
+      groups = [
+        {
+          id: '1',
+          name: 'Актерская группа №1',
+          program: 'acting',
+          leader: 'Иванова Мария Петровна',
+          maxStudents: 12,
+          description: 'Базовый курс актерского мастерства',
+          status: 'active',
+          createdAt: '2023-01-15T10:00:00Z',
+          updatedAt: '2023-01-15T10:00:00Z'
+        },
+        {
+          id: '2',
+          name: 'Танцевальная группа',
+          program: 'dance',
+          leader: 'Петров Алексей Владимирович',
+          maxStudents: 15,
+          description: 'Современные танцы для начинающих',
+          status: 'active',
+          createdAt: '2023-02-20T14:30:00Z',
+          updatedAt: '2023-02-20T14:30:00Z'
+        }
+      ];
+      saveGroups();
+    }
+
+    if (users.length === 0) {
+      users = [
+        {
+          id: '1',
+          fullName: 'Иванов Иван Иванович',
+          email: 'ivanov@example.com',
+          groupId: null,
+          role: 'student'
+        },
+        {
+          id: '2',
+          fullName: 'Петрова Мария Сергеевна',
+          email: 'petrova@example.com',
+          groupId: null,
+          role: 'student'
+        },
+        {
+          id: '3',
+          fullName: 'Сидоров Алексей Владимирович',
+          email: 'sidorov@example.com',
+          groupId: null,
+          role: 'student'
+        },
+        {
+          id: '4',
+          fullName: 'Кузнецова Елена Дмитриевна',
+          email: 'kuznetsova@example.com',
+          groupId: null,
+          role: 'student'
+        },
+        {
+          id: '5',
+          fullName: 'Смирнов Дмитрий Олегович',
+          email: 'smirnov@example.com',
+          groupId: null,
+          role: 'student'
+        }
+      ];
+      saveUsers();
+    }
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+      loadGroups();
+      
+      // Анимация загрузки
+      document.body.style.opacity = '0';
+      setTimeout(() => {
+        document.body.style.transition = 'opacity 0.5s';
+        document.body.style.opacity = '1';
+      }, 50);
+    });
+  </script>
+</body>
+</html>

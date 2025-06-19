@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>АНО ДО "Стандарт" - Главная</title>
+  <link rel="stylesheet" href="diploma.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Дополнительные стили для ленты новостей */
+    .news-feed {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .news-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .news-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .news-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 1.5rem;
+    }
+    
+    .news-author {
+      font-weight: 600;
+    }
+    
+    .news-date {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+    
+    .news-content {
+      margin-bottom: 15px;
+    }
+    
+    .news-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .news-image {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    
+    .news-image:hover {
+      transform: scale(1.03);
+    }
+    
+    .news-actions {
+      display: flex;
+      gap: 15px;
+    }
+    
+    /* Стили для модального окна создания новости */
+    .news-modal .modal-content {
+      max-width: 600px;
+    }
+    
+    .image-preview-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 15px 0;
+    }
+    
+    .image-preview {
+      position: relative;
+      width: 100%;
+      height: 100px;
+    }
+    
+    .image-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: var(--radius);
+    }
+    
+    .remove-image {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .add-image-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed var(--border-color);
+      border-radius: var(--radius);
+      height: 100px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .add-image-btn:hover {
+      border-color: var(--primary-color);
+    }
+    
+    /* Стили для кнопки удаления и просмотра изображений */
+    .delete-news-btn {
+      background: var(--danger-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-left: auto;
+      transition: var(--transition);
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+    
+    .delete-news-btn:hover {
+      background: #d6166b;
+    }
+    
+    /* Модальное окно для просмотра изображения */
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 1100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(5px);
+    }
+    
+    .image-modal-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+    }
+    
+    .image-modal-content img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      border-radius: var(--radius);
+    }
+    
+    .close-image-modal {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .close-image-modal:hover {
+      color: var(--danger-color);
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      .image-preview-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .news-images {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .image-preview-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .news-images {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>АНО ДО "Стандарт"</h1>
+      <div class="widgets">
+        <a href="dipl.html" class="widget active"><i class="fas fa-home"></i> Главная</a>
+        <a href="users.html" class="widget"><i class="fas fa-users"></i> Пользователи</a>
+        <a href="doki.html" class="widget active"><i class="fas fa-file-signature"></i> Договоры</a>
+        <a href="group.html" class="widget"><i class="fas fa-layer-group"></i> Группы</a>
+        <a href="otcheti.html" class="widget active"><i class="fas fa-chart-bar"></i> Отчёты</a>
+      </div>
+    </header>
+    
+    <main class="content">
+      <div class="news-feed">
+        <div class="filter-section" style="margin-bottom: 20px;">
+          <button class="btn" id="createNewsBtn"><i class="fas fa-plus"></i> Создать новость</button>
+        </div>
+        
+        <div id="newsContainer">
+          <!-- Новости будут загружаться здесь -->
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Модальное окно создания новости -->
+  <div id="newsModal" class="modal news-modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2><i class="fas fa-newspaper"></i> Создание новости</h2>
+      <form id="newsForm">
+        <div class="form-group">
+          <label for="newsText"><i class="fas fa-align-left"></i> Текст новости*</label>
+          <textarea id="newsText" rows="5" required placeholder="Опишите, что произошло..."></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label><i class="fas fa-images"></i> Фотографии (максимум 10)</label>
+          <div class="image-preview-container" id="imagePreviewContainer">
+            <div class="add-image-btn" id="addImageBtn">
+              <i class="fas fa-plus" style="font-size: 1.5rem; margin-bottom: 5px;"></i>
+              <span>Добавить фото</span>
+              <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn secondary" id="cancelNewsBtn"><i class="fas fa-times"></i> Отмена</button>
+          <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Опубликовать</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно для просмотра изображения -->
+  <div id="imageModal" class="image-modal">
+    <span class="close-image-modal">&times;</span>
+    <div class="image-modal-content">
+      <img id="expandedImage" src="" alt="Увеличенное изображение">
+    </div>
+  </div>
+
+  <script>
+    // Хранилище новостей
+    const NEWS_KEY = 'standart_news';
+    let news = JSON.parse(localStorage.getItem(NEWS_KEY)) || [];
+    let selectedImages = [];
+    
+    // DOM элементы
+    const newsContainer = document.getElementById('newsContainer');
+    const createNewsBtn = document.getElementById('createNewsBtn');
+    const newsModal = document.getElementById('newsModal');
+    const newsForm = document.getElementById('newsForm');
+    const newsText = document.getElementById('newsText');
+    const imageUpload = document.getElementById('imageUpload');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const addImageBtn = document.getElementById('addImageBtn');
+    const imageModal = document.getElementById('imageModal');
+    const expandedImage = document.getElementById('expandedImage');
+    
+    // Загрузка новостей
+    function loadNews() {
+      newsContainer.innerHTML = '';
+      
+      if (news.length === 0) {
+        newsContainer.innerHTML = '<p style="text-align: center; color: var(--text-light);">Новостей пока нет</p>';
+        return;
+      }
+      
+      news.forEach((item, index) => {
+        const newsCard = document.createElement('div');
+        newsCard.className = 'news-card';
+        newsCard.innerHTML = `
+          <button class="delete-news-btn" data-id="${item.id}"><i class="fas fa-trash"></i></button>
+          <div class="news-header">
+            <div class="news-avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div>
+              <div class="news-author">Администратор</div>
+              <div class="news-date">${formatDate(item.date)}</div>
+            </div>
+          </div>
+          <div class="news-content">
+            ${item.text}
+          </div>
+          ${item.images.length > 0 ? `
+            <div class="news-images">
+              ${item.images.map(img => `
+                <img src="${img}" class="news-image" onclick="openImageModal('${img}')">
+              `).join('')}
+            </div>
+          ` : ''}
+        `;
+        newsContainer.appendChild(newsCard);
+      });
+
+      // Добавляем обработчики для кнопок удаления
+      document.querySelectorAll('.delete-news-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = parseInt(this.getAttribute('data-id'));
+          deleteNews(id);
+        });
+      });
+    }
+    
+    // Удаление новости
+    function deleteNews(id) {
+      if (confirm('Вы уверены, что хотите удалить эту новость?')) {
+        news = news.filter(item => item.id !== id);
+        localStorage.setItem(NEWS_KEY, JSON.stringify(news));
+        loadNews();
+      }
+    }
+    
+    // Форматирование даты
+    function formatDate(dateString) {
+      const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      return new Date(dateString).toLocaleDateString('ru-RU', options);
+    }
+    
+    // Открытие изображения в модальном окне
+    window.openImageModal = function(src) {
+      expandedImage.src = src;
+      imageModal.style.display = 'block';
+    }
+    
+    // Закрытие модального окна изображения
+    document.querySelector('.close-image-modal').addEventListener('click', () => {
+      imageModal.style.display = 'none';
+    });
+    
+    window.addEventListener('click', (e) => {
+      if (e.target === imageModal) {
+        imageModal.style.display = 'none';
+      }
+    });
+    
+    // Открытие модального окна создания новости
+    createNewsBtn.addEventListener('click', () => {
+      newsForm.reset();
+      selectedImages = [];
+      imagePreviewContainer.innerHTML = '';
+      imagePreviewContainer.appendChild(addImageBtn);
+      newsModal.style.display = 'block';
+    });
+    
+    // Добавление изображений
+    addImageBtn.addEventListener('click', () => {
+      imageUpload.click();
+    });
+    
+    imageUpload.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      
+      // Проверка количества изображений
+      if (selectedImages.length + files.length > 10) {
+        alert('Можно загрузить не более 10 изображений');
+        return;
+      }
+      
+      files.forEach(file => {
+        if (!file.type.match('image.*')) {
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const imgSrc = event.target.result;
+          selectedImages.push(imgSrc);
+          
+          const imagePreview = document.createElement('div');
+          imagePreview.className = 'image-preview';
+          imagePreview.innerHTML = `
+            <img src="${imgSrc}">
+            <button class="remove-image" data-index="${selectedImages.length - 1}">&times;</button>
+          `;
+          imagePreviewContainer.insertBefore(imagePreview, addImageBtn);
+          
+          // Обработчик удаления изображения
+          imagePreview.querySelector('.remove-image').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const index = parseInt(e.target.getAttribute('data-index'));
+            selectedImages.splice(index, 1);
+            imagePreview.remove();
+            
+            // Обновляем индексы у оставшихся кнопок удаления
+            document.querySelectorAll('.remove-image').forEach((btn, i) => {
+              btn.setAttribute('data-index', i);
+            });
+          });
+        };
+        reader.readAsDataURL(file);
+      });
+      
+      // Сброс input, чтобы можно было загружать те же файлы снова
+      imageUpload.value = '';
+    });
+    
+    // Обработка формы новости
+    newsForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const text = newsText.value.trim();
+      if (!text) {
+        alert('Введите текст новости');
+        return;
+      }
+      
+      const newNews = {
+        id: Date.now(),
+        text: text,
+        images: selectedImages,
+        date: new Date().toISOString(),
+        author: 'Администратор'
+      };
+      
+      news.unshift(newNews); // Добавляем в начало массива
+      localStorage.setItem(NEWS_KEY, JSON.stringify(news));
+      loadNews();
+      
+      // Закрываем модальное окно
+      newsModal.style.display = 'none';
+    });
+    
+    // Закрытие модального окна
+    document.querySelectorAll('.close, #cancelNewsBtn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        newsModal.style.display = 'none';
+      });
+    });
+    
+    window.addEventListener('click', (e) => {
+      if (e.target === newsModal) {
+        newsModal.style.display = 'none';
+      }
+    });
+    
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+      // Анимация загрузки
+      document.body.style.opacity = '0';
+      setTimeout(() => {
+        document.body.style.transition = 'opacity 0.5s';
+        document.body.style.opacity = '1';
+      }, 50);
+      
+      // Загрузка новостей
+      loadNews();
+      
+      // Сохраняем последнюю активную страницу
+      const widgets = document.querySelectorAll('.widget');
+      widgets.forEach(widget => {
+        widget.addEventListener('click', function() {
+          localStorage.setItem('lastActivePage', this.getAttribute('href'));
+        });
+      });
+      
+      // Восстанавливаем последнюю активную страницу
+      const lastActivePage = localStorage.getItem('lastActivePage');
+      if (lastActivePage && lastActivePage !== window.location.pathname.split('/').pop()) {
+        widgets.forEach(widget => {
+          widget.classList.remove('active');
+          if (widget.getAttribute('href') === lastActivePage) {
+            widget.classList.add('active');
+          }
+        });
+      }
+    });
+  </script>
+  <div class="footer-contacts">
+    <h4>Для связи с нами:</h4>
+    <p><a href="tel:+7XXXXXXXXXX"><i class="fas fa-phone"></i> +7 (XXX) XXX-XX-XX</a></p>
+    <p><a href="mailto:info@стандарт.ру"><i class="fas fa-envelope"></i> info@стандарт.ру</a></p>
+    <p><a href="https://t.me/standart_do" target="_blank"><i class="fab fa-telegram"></i> Telegram</a></p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>АНО ДО "Стандарт" - Отчёты</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --primary-light: #4895ef;
+      --secondary-color: #7209b7;
+      --success-color: #4cc9f0;
+      --danger-color: #f72585;
+      --text-color: #2b2d42;
+      --text-light: #8d99ae;
+      --border-color: #edf2f4;
+      --bg-light: #f8f9fa;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .header h1 {
+      margin: 0 0 15px 0;
+      font-size: 2rem;
+    }
+
+    .widgets {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .widget {
+      color: white;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .widget:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .widget.active {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .content {
+      background-color: white;
+      padding: 30px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 30px;
+    }
+
+    .filter-section {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .filter-input, .filter-select {
+      padding: 8px 15px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
+
+    .filter-input:focus, .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+
+    .btn:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn.small {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .btn.secondary {
+      background-color: var(--secondary-color);
+    }
+
+    .btn.secondary:hover {
+      background-color: #5a08a0;
+    }
+
+    .btn.danger {
+      background-color: var(--danger-color);
+    }
+
+    .btn.danger:hover {
+      background-color: #e5177e;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 30px;
+      width: 70%;
+      max-width: 800px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+    
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: var(--transition);
+    }
+    
+    .close:hover {
+      color: var(--danger-color);
+      transform: rotate(90deg);
+    }
+    
+    .report-form table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    
+    .report-form th, 
+    .report-form td {
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      text-align: left;
+    }
+    
+    .report-form th {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .report-form input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .reports-list {
+      display: grid;
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .report-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      transition: var(--transition);
+    }
+    
+    .report-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+    }
+    
+    .report-details p {
+      margin: 8px 0;
+      color: var(--text-color);
+    }
+    
+    .report-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .period-group {
+      display: none;
+    }
+    
+    .period-group.active {
+      display: block;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printContent, #printContent * {
+        visibility: visible;
+      }
+      #printContent {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+        font-size: 14pt;
+        line-height: 1.5;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 90%;
+        padding: 20px;
+      }
+      
+      .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .report-form table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>АНО ДО "Стандарт"</h1>
+      <div class="widgets">
+        <a href="dipl.html" class="widget"><i class="fas fa-home"></i> Главная</a>
+        <a href="users.html" class="widget"><i class="fas fa-users"></i> Пользователи</a>
+        <a href="doki.html" class="widget"><i class="fas fa-file-signature"></i> Договоры</a>
+        <a href="group.html" class="widget"><i class="fas fa-layer-group"></i> Группы</a>
+        <a href="otcheti.html" class="widget active"><i class="fas fa-file-alt"></i> Отчёты</a>
+      </div>
+    </header>
+
+    <main class="content">
+      <h2><i class="fas fa-file-contract"></i> Отчёты</h2>
+      
+      <div class="actions" style="margin-bottom: 20px;">
+        <button class="btn" id="create-report"><i class="fas fa-plus"></i> Создать отчёт</button>
+      </div>
+      
+      <div class="filter-section">
+        <div class="filter-group">
+          <input type="text" id="search-reports" placeholder="Поиск по отчётам..." class="filter-input">
+        </div>
+        
+        <div class="filter-group">
+          <label for="period-type"><i class="fas fa-calendar"></i> Период:</label>
+          <select id="period-type" class="filter-select">
+            <option value="">Все периоды</option>
+            <option value="month">Месяц</option>
+            <option value="quarter">Квартал</option>
+            <option value="year">Год</option>
+          </select>
+        </div>
+        
+        <button class="btn" id="apply-filters"><i class="fas fa-search"></i> Поиск</button>
+      </div>
+
+      <div class="reports-list" id="reports-list">
+        <!-- Отчёты будут загружаться здесь -->
+      </div>
+
+      <div class="pagination">
+        <button class="btn small" id="prev-page"><i class="fas fa-chevron-left"></i></button>
+        <span class="page-active">1</span>
+        <button class="btn small">2</button>
+        <button class="btn small" id="next-page"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Модальное окно создания отчёта -->
+  <div id="create-report-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2><i class="fas fa-file-alt"></i> Создание нового отчёта</h2>
+      
+      <div class="report-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="report-period"><i class="fas fa-calendar"></i> Период отчёта:</label>
+            <select id="report-period" class="form-control">
+              <option value="month">Месяц</option>
+              <option value="quarter">Квартал</option>
+              <option value="year">Год</option>
+            </select>
+          </div>
+          
+          <div class="form-group period-group active" id="month-group">
+            <label for="report-month"><i class="fas fa-calendar-alt"></i> Месяц:</label>
+            <select id="report-month" class="form-control">
+              <option value="1">Январь</option>
+              <option value="2">Февраль</option>
+              <option value="3">Март</option>
+              <option value="4">Апрель</option>
+              <option value="5">Май</option>
+              <option value="6">Июнь</option>
+              <option value="7">Июль</option>
+              <option value="8">Август</option>
+              <option value="9">Сентябрь</option>
+              <option value="10">Октябрь</option>
+              <option value="11">Ноябрь</option>
+              <option value="12">Декабрь</option>
+            </select>
+          </div>
+          
+          <div class="form-group period-group" id="quarter-group">
+            <label for="report-quarter"><i class="fas fa-calendar-alt"></i> Квартал:</label>
+            <select id="report-quarter" class="form-control">
+              <option value="1">Первый (январь-март)</option>
+              <option value="2">Второй (апрель-июнь)</option>
+              <option value="3">Третий (июль-сентябрь)</option>
+              <option value="4">Четвёртый (октябрь-декабрь)</option>
+            </select>
+          </div>
+        </div>
+        
+        <h3><i class="fas fa-chalkboard-teacher"></i> Данные преподавателей</h3>
+        
+        <table class="report-table" id="teachers-table">
+          <thead>
+            <tr>
+              <th>ФИО преподавателя</th>
+              <th>Группа</th>
+              <th>Количество занятий</th>
+              <th>Сумма (руб)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" placeholder="Иванова М.П." class="form-control"></td>
+              <td><input type="text" placeholder="Актерское мастерство" class="form-control"></td>
+              <td><input type="number" placeholder="12" min="1" class="form-control"></td>
+              <td><input type="number" placeholder="24000" min="0" class="form-control"></td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <button class="btn secondary" onclick="addRow()"><i class="fas fa-plus"></i> Добавить строку</button>
+        
+        <div class="form-actions">
+          <button class="btn secondary" onclick="closeModal()">Отмена</button>
+          <button class="btn" onclick="saveReport()"><i class="fas fa-save"></i> Сохранить отчёт</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Скрытый контент для PDF -->
+  <div id="printContent" style="display: none; padding: 25px; background: white; font-family: 'Times New Roman', serif;">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h2 style="font-size: 16pt; margin: 0;">АНО ДО "Стандарт"</h2>
+      <p style="font-size: 12pt; margin: 5px 0;">ИНН 1234567890, ОГРН 1234567890123</p>
+      <p style="font-size: 12pt; margin: 0;">г. Москва, ул. Образцовая, д. 1</p>
+    </div>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+      <h1 style="font-size: 14pt; margin: 0; text-decoration: underline;">ОТЧЁТ</h1>
+      <p style="font-size: 12pt; margin: 5px 0;" id="printPeriod"></p>
+      <p style="font-size: 12pt; margin: 0;">о выплатах преподавателям</p>
+    </div>
+
+    <div style="margin-bottom: 20px; text-align: justify;">
+      <p style="font-size: 12pt; margin: 0; text-indent: 1.5cm;">
+        Настоящий отчёт составлен на основании данных о проведённых занятиях и выплатах преподавателям 
+        за указанный период. Документ содержит сведения о количестве занятий, суммах выплат 
+        и предназначен для бухгалтерского и налогового учёта.
+      </p>
+    </div>
+
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 10pt;">
+      <thead>
+        <tr>
+          <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">№</th>
+          <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">ФИО преподавателя</th>
+          <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Группа/курс</th>
+          <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Кол-во занятий</th>
+          <th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">Сумма (руб.)</th>
+        </tr>
+      </thead>
+      <tbody id="printTableBody">
+        <!-- Данные будут здесь -->
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="border: 1px solid #000; padding: 8px; text-align: right; font-weight: bold;">Итого:</td>
+          <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;" id="printTotalLessons"></td>
+          <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;" id="printTotalAmount"></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div style="margin-top: 30px; text-align: justify;">
+      <p style="font-size: 12pt; margin: 0; text-indent: 1.5cm;">
+        Общая сумма выплат по отчёту составляет <span id="printTotalAmountText" style="font-weight: bold;"></span> 
+        рублей (<span id="printTotalAmountWords"></span>), включая НДФЛ и страховые взносы.
+      </p>
+    </div>
+
+    <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+      <div style="width: 45%;">
+        <p style="border-top: 1px solid #000; padding-top: 5px; font-size: 10pt; margin: 40px 0 0 0;">
+          <strong>Директор АНО ДО "Стандарт"</strong><br>
+          _________________ / Иванов И.И. /
+        </p>
+        <p style="font-size: 9pt; margin: 5px 0 0 25px;">М.П.</p>
+      </div>
+      <div style="width: 45%;">
+        <p style="border-top: 1px solid #000; padding-top: 5px; font-size: 10pt; margin: 40px 0 0 0;">
+          <strong>Бухгалтер</strong><br>
+          _________________ / Петрова А.С. /
+        </p>
+      </div>
+    </div>
+
+    <div style="margin-top: 20px; text-align: right;">
+      <p style="font-size: 10pt; margin: 0;">
+        Дата формирования: <span id="printReportDate"></span>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    // Инициализация jsPDF
+    const { jsPDF } = window.jspdf;
+
+    // Хранилище отчётов
+    const REPORTS_KEY = 'standart_reports_v2';
+    let allReports = [];
+
+    // DOM элементы
+    const createReportBtn = document.getElementById('create-report');
+    const createReportModal = document.getElementById('create-report-modal');
+    const closeModalBtns = document.querySelectorAll('.close');
+    const reportPeriodSelect = document.getElementById('report-period');
+    const monthGroup = document.getElementById('month-group');
+    const quarterGroup = document.getElementById('quarter-group');
+    const reportsList = document.getElementById('reports-list');
+    const searchInput = document.getElementById('search-reports');
+    const periodTypeFilter = document.getElementById('period-type');
+
+    // Инициализация при загрузке
+    document.addEventListener('DOMContentLoaded', () => {
+      loadReports();
+      
+      // Изменение типа периода
+      reportPeriodSelect.addEventListener('change', function() {
+        if (this.value === 'month') {
+          monthGroup.classList.add('active');
+          quarterGroup.classList.remove('active');
+        } else if (this.value === 'quarter') {
+          monthGroup.classList.remove('active');
+          quarterGroup.classList.add('active');
+        } else {
+          monthGroup.classList.remove('active');
+          quarterGroup.classList.remove('active');
+        }
+      });
+      
+      // Открытие модального окна
+      createReportBtn.addEventListener('click', () => {
+        createReportModal.style.display = 'block';
+      });
+      
+      // Закрытие модального окна
+      closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', closeModal);
+      });
+      
+      // Фильтрация
+      document.getElementById('apply-filters').addEventListener('click', applyFilters);
+      searchInput.addEventListener('input', applyFilters);
+      periodTypeFilter.addEventListener('change', applyFilters);
+    });
+
+    // Загрузка отчётов из localStorage
+    function loadReports() {
+      const saved = localStorage.getItem(REPORTS_KEY);
+      allReports = saved ? JSON.parse(saved) : [];
+      renderReports();
+    }
+
+    // Сохранение отчётов в localStorage
+    function saveReports() {
+      localStorage.setItem(REPORTS_KEY, JSON.stringify(allReports));
+    }
+
+    // Сохранение нового отчёта
+    function saveReport() {
+      const period = document.getElementById('report-period').value;
+      const currentYear = new Date().getFullYear();
+      
+      // Определение периода
+      let periodName = '';
+      let reportTitle = '';
+      const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 
+                         'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+      const quarterNames = ['Первый квартал', 'Второй квартал', 'Третий квартал', 'Четвёртый квартал'];
+      
+      if (period === 'month') {
+        const month = document.getElementById('report-month').value;
+        periodName = monthNames[parseInt(month) - 1];
+        reportTitle = `Отчёт за ${periodName} ${currentYear}`;
+      } else if (period === 'quarter') {
+        const quarter = document.getElementById('report-quarter').value;
+        periodName = quarterNames[parseInt(quarter) - 1];
+        reportTitle = `Отчёт за ${periodName} ${currentYear}`;
+      } else {
+        reportTitle = `Отчёт за ${currentYear} год`;
+      }
+      
+      // Сбор данных преподавателей
+      const rows = [];
+      let totalLessons = 0;
+      let totalAmount = 0;
+      
+      document.querySelectorAll('#teachers-table tbody tr').forEach(row => {
+        const teacher = row.querySelector('td:nth-child(1) input').value.trim();
+        const group = row.querySelector('td:nth-child(2) input').value.trim();
+        const lessons = parseInt(row.querySelector('td:nth-child(3) input').value) || 0;
+        const amount = parseFloat(row.querySelector('td:nth-child(4) input').value) || 0;
+        
+        if (teacher && amount > 0) {
+          rows.push({ teacher, group, lessons, amount });
+          totalLessons += lessons;
+          totalAmount += amount;
+        }
+      });
+      
+      // Проверка данных
+      if (rows.length === 0) {
+        alert('Добавьте хотя бы одного преподавателя с суммой выплаты!');
+        return;
+      }
+      
+      // Создание отчёта
+      const newReport = {
+        id: Date.now(),
+        title: reportTitle,
+        period: period,
+        periodName: periodName,
+        year: currentYear,
+        totalLessons: totalLessons,
+        totalAmount: totalAmount,
+        rows: rows,
+        createdAt: new Date().toISOString()
+      };
+      
+      // Сохранение
+      allReports.unshift(newReport);
+      saveReports();
+      
+      // Закрытие модального окна
+      closeModal();
+      
+      // Обновление списка отчётов
+      renderReports();
+    }
+
+    // Добавление строки в таблицу преподавателей
+    function addRow() {
+      const tbody = document.querySelector('#teachers-table tbody');
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td><input type="text" placeholder="ФИО преподавателя" class="form-control"></td>
+        <td><input type="text" placeholder="Название группы" class="form-control"></td>
+        <td><input type="number" placeholder="0" min="1" class="form-control"></td>
+        <td><input type="number" placeholder="0" min="0" class="form-control"></td>
+      `;
+      tbody.appendChild(newRow);
+    }
+
+    // Закрытие модального окна
+    function closeModal() {
+      createReportModal.style.display = 'none';
+      // Очистка формы
+      document.querySelector('#teachers-table tbody').innerHTML = `
+        <tr>
+          <td><input type="text" placeholder="Иванова М.П." class="form-control"></td>
+          <td><input type="text" placeholder="Актерское мастерство" class="form-control"></td>
+          <td><input type="number" placeholder="12" min="1" class="form-control"></td>
+          <td><input type="number" placeholder="24000" min="0" class="form-control"></td>
+        </tr>
+      `;
+    }
+
+    // Удаление отчёта
+    function deleteReport(id) {
+      if (confirm('Вы уверены, что хотите удалить этот отчёт?')) {
+        allReports = allReports.filter(report => report.id !== id);
+        saveReports();
+        renderReports();
+      }
+    }
+
+    // Отображение отчётов
+    function renderReports(filteredReports = null) {
+      const reportsToShow = filteredReports || allReports;
+      
+      reportsList.innerHTML = reportsToShow.map(report => `
+        <div class="report-card" data-id="${report.id}">
+          <div class="report-header">
+            <h3>${report.title}</h3>
+          </div>
+          <div class="report-details">
+            <p><strong>Преподаватели:</strong> ${report.rows.map(r => r.teacher).join(', ')}</p>
+            <p><strong>Всего занятий:</strong> ${report.totalLessons}</p>
+            <p><strong>Общая сумма:</strong> ${report.totalAmount.toLocaleString('ru-RU')} руб</p>
+          </div>
+          <div class="report-actions">
+            <button class="btn small print-btn" data-id="${report.id}"><i class="fas fa-file-pdf"></i> Скачать PDF</button>
+            <button class="btn small danger" onclick="deleteReport(${report.id})"><i class="fas fa-trash"></i> Удалить</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Генерация PDF
+    async function generatePDF(reportId) {
+      try {
+        console.log('Начало генерации PDF для отчёта:', reportId);
+        
+        const report = allReports.find(r => r.id == reportId);
+        if (!report) {
+          throw new Error('Отчёт не найден');
+        }
+
+        // Заполняем данные
+        document.getElementById('printPeriod').textContent = 
+          `за ${report.periodName} ${report.year} года`;
+
+        const tbody = document.getElementById('printTableBody');
+        tbody.innerHTML = report.rows.map((row, i) => `
+          <tr>
+            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${i + 1}</td>
+            <td style="border: 1px solid #000; padding: 8px;">${row.teacher}</td>
+            <td style="border: 1px solid #000; padding: 8px;">${row.group || '-'}</td>
+            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${row.lessons}</td>
+            <td style="border: 1px solid #000; padding: 8px; text-align: right;">${row.amount.toLocaleString('ru-RU')}</td>
+          </tr>
+        `).join('');
+
+        // Итоги
+        document.getElementById('printTotalLessons').textContent = report.totalLessons;
+        document.getElementById('printTotalAmount').textContent = report.totalAmount.toLocaleString('ru-RU');
+        
+        // Сумма прописью
+        const amountWords = numberToWords(report.totalAmount);
+        document.getElementById('printTotalAmountText').textContent = report.totalAmount.toLocaleString('ru-RU');
+        document.getElementById('printTotalAmountWords').textContent = amountWords;
+
+        // Дата
+        const reportDate = new Date(report.createdAt);
+        document.getElementById('printReportDate').textContent = reportDate.toLocaleDateString('ru-RU', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        });
+
+        // Показываем блок перед генерацией
+        const printContent = document.getElementById('printContent');
+        printContent.style.display = 'block';
+
+        // Генерация PDF
+        console.log('Создание canvas...');
+        const canvas = await html2canvas(printContent, { 
+          scale: 2,
+          logging: true,
+          useCORS: true,
+          backgroundColor: '#FFFFFF'
+        });
+        
+        console.log('Создание PDF...');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        pdf.addImage(canvas, 'PNG', 0, 0, imgWidth, imgHeight);
+        
+        // Открыть в новой вкладке
+        console.log('Открытие PDF...');
+        const pdfUrl = URL.createObjectURL(pdf.output('blob'));
+        window.open(pdfUrl, '_blank');
+
+        // Скачать
+        if (confirm('Скачать PDF?')) {
+          pdf.save(`Отчёт_${report.periodName}_${report.year}.pdf`);
+        }
+
+      } catch (error) {
+        console.error('Ошибка в generatePDF:', error);
+        alert('Ошибка при генерации PDF: ' + error.message);
+      } finally {
+        // Скрываем блок после генерации
+        document.getElementById('printContent').style.display = 'none';
+      }
+    }
+
+    // Функция для перевода числа в слова
+    function numberToWords(num) {
+      const units = ['', 'один', 'два', 'три', 'четыре', 'пять', 'шесть', 'семь', 'восемь', 'девять'];
+      const teens = ['десять', 'одиннадцать', 'двенадцать', 'тринадцать', 'четырнадцать', 'пятнадцать', 'шестнадцать', 'семнадцать', 'восемнадцать', 'девятнадцать'];
+      const tens = ['', 'десять', 'двадцать', 'тридцать', 'сорок', 'пятьдесят', 'шестьдесят', 'семьдесят', 'восемьдесят', 'девяносто'];
+      const hundreds = ['', 'сто', 'двести', 'триста', 'четыреста', 'пятьсот', 'шестьсот', 'семьсот', 'восемьсот', 'девятьсот'];
+      
+      let words = [];
+      if (num === 0) return 'ноль рублей';
+      
+      // Разбиваем число на части
+      const rub = Math.floor(num);
+      const kop = Math.round((num - rub) * 100);
+      
+      // Обрабатываем рубли
+      if (rub > 0) {
+        if (rub >= 1000) {
+          words.push('более тысячи');
+        } else {
+          if (rub >= 100) {
+            words.push(hundreds[Math.floor(rub / 100)]);
+            rub %= 100;
+          }
+          if (rub >= 20) {
+            words.push(tens[Math.floor(rub / 10)]);
+            rub %= 10;
+          }
+          if (rub >= 10) {
+            words.push(teens[rub - 10]);
+            rub = 0;
+          }
+          if (rub > 0) {
+            words.push(units[rub]);
+          }
+        }
+        
+        // Добавляем валюту
+        const lastTwo = rub % 100;
+        const lastOne = rub % 10;
+        
+        if (lastTwo >= 11 && lastTwo <= 19) {
+          words.push('рублей');
+        } else if (lastOne === 1) {
+          words.push('рубль');
+        } else if (lastOne >= 2 && lastOne <= 4) {
+          words.push('рубля');
+        } else {
+          words.push('рублей');
+        }
+      }
+      
+      // Обрабатываем копейки (если нужно)
+      if (kop > 0) {
+        words.push('и');
+        if (kop >= 20) {
+          words.push(tens[Math.floor(kop / 10)]);
+          kop %= 10;
+        }
+        if (kop >= 10) {
+          words.push(teens[kop - 10]);
+          kop = 0;
+        }
+        if (kop > 0) {
+          words.push(units[kop]);
+        }
+        
+        // Добавляем валюту для копеек
+        if (kop === 1) {
+          words.push('копейка');
+        } else if (kop >= 2 && kop <= 4) {
+          words.push('копейки');
+        } else {
+          words.push('копеек');
+        }
+      }
+      
+      return words.join(' ');
+    }
+
+    // Фильтрация отчётов
+    function applyFilters() {
+      const searchText = searchInput.value.toLowerCase();
+      const periodType = periodTypeFilter.value;
+      
+      const filteredReports = allReports.filter(report => {
+        const matchesSearch = report.title.toLowerCase().includes(searchText) || 
+                             report.rows.some(r => r.teacher.toLowerCase().includes(searchText));
+        const matchesPeriod = periodType === '' || report.period === periodType;
+        return matchesSearch && matchesPeriod;
+      });
+      
+      renderReports(filteredReports);
+    }
+
+    // Обработчик кнопки PDF
+    document.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.print-btn');
+      if (!btn) return;
+
+      const reportId = parseInt(btn.dataset.id);
+      if (!reportId) {
+        console.error('Не найден ID отчёта');
+        return;
+      }
+
+      try {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Генерация...';
+        
+        await generatePDF(reportId);
+      } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Ошибка: ' + error.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-file-pdf"></i> Скачать PDF';
+      }
+    });
+  </script>
+</body>
+</html>
